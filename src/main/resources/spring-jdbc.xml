@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+		 http://www.springframework.org/schema/mvc  http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd ">
+	<tx:annotation-driven />
+	<tx:advice id="txAdvice">
+		<tx:attributes>
+			<tx:method name="save*" read-only="false"  />
+		</tx:attributes>
+	</tx:advice>
+	<bean id="datasource"
+		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driver" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/YTDB" />
+		<property name="username" value="root" />
+		<property name="password" value="root" />
+	</bean>
+
+	<beans profile="jdbc">
+		<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+			<constructor-arg value="dataSource" />
+		</bean>
+	</beans>
+
+	<beans profile="hibernate">
+		<!-- <bean class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"></bean> -->
+
+		<bean id="sessionFactory"
+			class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+			<property name="dataSource" ref="dataSource" />
+			<property name="packagesToScan" value="com.free.testspring.domain" />
+			<property name="hibernateProperties">
+				<props>
+					<prop key="dialect">org.hibernate.dialect.HSQLDialect</prop>
+				</props>
+			</property>
+		</bean>
+
+		<bean
+			class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+	</beans>
+
+	<beans profile="jpa">
+		<!-- org.springframework.orm.jpa.LocalEntityManagerFactoryBean org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean -->
+		<bean id="entityManager"
+			class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+			<property name="dataSource" ref="dataSource" />
+		</bean>
+		<bean
+			class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+		<bean
+			class="org.springframework.orm.jpa.persistenceunit.PersistenceUnitPostProcessor" />
+		<bean
+			class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+	</beans>
+
+
+</beans>
