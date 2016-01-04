@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.free.testspring.dao.UsersDao;
 import com.mongodb.util.JSON;
 
-@Service
+//@Service
 public class TestService implements ITestService {
 
 	@Autowired

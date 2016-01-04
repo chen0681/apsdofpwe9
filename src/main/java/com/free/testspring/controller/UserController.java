@@ -6,20 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.free.testspring.domain.Role;
+import com.free.testspring.domain.Test;
 import com.free.testspring.domain.User;
 import com.free.testspring.services.ITestService;
 import com.free.testspring.utils.RolePropertyEditor;
@@ -32,7 +32,7 @@ public class UserController {
 	private static List<Role> roleList;
 	private static Map<Long, Role> roleMap;
 
-	@Inject
+//	@Inject
 	private ITestService testService;
 	
 	public UserController() {
@@ -109,5 +109,10 @@ public class UserController {
 			return "redirect:/user/list";
 		}
 		
+	}
+	
+	@RequestMapping("test")
+	public String test(@RequestParam(required=false) @ModelAttribute("test") Test test) {
+		return "user/test";
 	}
 }
