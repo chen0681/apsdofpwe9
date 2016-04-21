@@ -268,6 +268,6 @@ public class ReactorTest {
 		    wordWithCount -> System.out.println(wordWithCount.t1 + ": " + wordWithCount.t2),
 		    error -> System.out.println( error)
 		  );
-		 
+		  
 	}
  }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+          http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+       
+       <bean id="memoryIdRepos"  class="org.apache.camel.processor.idempotent.MemoryIdempotentRepository" />
+       <bean id="camelProcessor"  class="com.free.testspring.camel.CamelProcessor" />
+       
+   	<camel:camelContext id="testCamel"  >
+   		<camel:route id="testRoute" >
+   			<camel:from uri="kafka:localhost:9092?topic=test&amp;groupId=1&amp;zookeeperHost=localhost&amp;zookeeperPort=2181"  />
+   			<camel:idempotentConsumer messageIdRepositoryRef="memoryIdRepos" skipDuplicate="false" removeOnFailure="true" eager="false" >
+   				<camel:header>headerId</camel:header>
+   				<camel:process ref="camelProcessor"   />
+   				<camel:to uri="kafka:localhost:9092?topic=test&amp;groupId=1"  />
+   			</camel:idempotentConsumer>
+   		</camel:route>
+   	</camel:camelContext>
+   	
+   	<bean class="org.apache.camel.component.kafka.KafkaComponent"/>
+</beans>
