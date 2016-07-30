@@ -8,14 +8,22 @@
        
        <bean id="memoryIdRepos"  class="org.apache.camel.processor.idempotent.MemoryIdempotentRepository" />
        <bean id="camelProcessor"  class="com.free.testspring.camel.CamelProcessor" />
+<!--        <bean id="errorHandler"  class="org.apache.camel.builder.DeadLetterChannelBuilder"> -->
+<!--        	<property name=""></property> -->
+<!--        </bean> -->
        
    	<camel:camelContext id="testCamel"  >
-   		<camel:route id="testRoute" >
+<!--    		<camel:errorHandler type="DeadLetterChannel" > -->
+<!--    			<camel:redeliveryPolicy maximumRedeliveries="1" redeliveryDelay="5000" /> -->
+<!--    		</camel:errorHandler> -->
+   		
+   		<camel:route id="testRoute">
    			<camel:from uri="kafka:localhost:9092?topic=test&amp;groupId=1&amp;zookeeperHost=localhost&amp;zookeeperPort=2181"  />
+   			<camel:from uri="kafka:localhost:9092?topic=test2&amp;groupId=testGroup&amp;zookeeperHost=localhost&amp;zookeeperPort=2181"  />
    			<camel:idempotentConsumer messageIdRepositoryRef="memoryIdRepos" skipDuplicate="false" removeOnFailure="true" eager="false" >
    				<camel:header>headerId</camel:header>
    				<camel:process ref="camelProcessor"   />
-   				<camel:to uri="kafka:localhost:9092?topic=test&amp;groupId=1"  />
+<!--    				<camel:to uri="kafka:localhost:9092?topic=test&amp;groupId=1"  /> -->
    			</camel:idempotentConsumer>
    		</camel:route>
    	</camel:camelContext>
